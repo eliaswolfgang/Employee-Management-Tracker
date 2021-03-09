@@ -140,16 +140,17 @@ async function newRole() {
             choices: departmentOptions
         }
     ]);
+    
     // Add the new role object to the database
     await query.addRole(role);
-    console.log(`Added ${role.title} to ${department_id.name}`);
+    console.log(`Added ${role.title}`);
+    main();
 }
 
 async function newEmployee() {
     const roles = await query.viewRoles();
     const departments = await query.viewDepartments();
-    const allEmployees = await query.viewEmployees();
-    // Map the departments table to have options to select
+    // Map the departments and roles tables to have options to select
     const departmentOptions = departments.map(
         ({ id, name }) => 
         ({
@@ -162,38 +163,46 @@ async function newEmployee() {
             name: title,
             value: id
         }));
-    const newEmployee = await prompt([
+    const employee = await prompt([
         {
             name: 'first_name',
-            message: "What is this employee's name?"
+            message: "What is this employee's first name?"
         },
         {
             name: 'last_name',
             message: "What is this employee's last name?"
         },
+    ]);
+    const { roleID } = await prompt([
         {
-            name: 'role_id',
+            name: 'roleID',
             type: 'list',
             message: "What is this employee's role?",
             choices: roleOptions
-        },
+        }
+    ]);
+    employee.role_id = roleID;
+
+    const { managerID } = await prompt([
         {
-            name: 'manager_id',
+            name: 'managerID',
             type: 'list',
             message: "Which department should this employee be added to?",
             choices: departmentOptions
         }
     ]);
+    employee.manager_id = managerID;   
+   
     // Add newEmployee to the database and return the updated employee table
-    await query.addEmployee(newEmployee);
-    console.log(`Added ${newEmployee.first_name} ${newEmployee.last_name} to ${manager_id.name}`, '\n');
-    console.table(allEmployees);
+    await query.addEmployee(employee);
+    console.log(`Added ${employee.first_name} ${employee.last_name}`, '\n');
+
     main();
 }
 
 async function changeEmployeeRole() {
     const employees = await query.viewEmployees();
-    const roles = await query.findAllRoles();
+    const roles = await query.viewRoles();
     const roleOptions = roles.map(
         ({ id, title }) => 
         ({
@@ -201,31 +210,31 @@ async function changeEmployeeRole() {
             value: id
         }));
     const employeeOptions = employees.map(
-        ({ id, first_name, last_name }) => 
+        ({ id, name }) => 
         ({
-            name: `${first_name} ${last_name}`,
+            name: name,
             value: id
         }));
     
-      const { employeeId } = await prompt([
+      const { employeeID } = await prompt([
         {
           type: "list",
-          name: "employeeId",
+          name: "employeeID",
           message: "Which employee's role do you want to update?",
           choices: employeeOptions
         }
       ]);
     
-      const { roleId } = await prompt([
+      const { roleID } = await prompt([
         {
           type: "list",
-          name: "roleId",
+          name: "roleID",
           message: "Which role do you want to assign the selected employee?",
           choices: roleOptions
         }
       ]);
     
-      await query.updateRole(employeeId, roleId);
+      await query.updateRole(employeeID, roleID);
       console.log("Updated employee's role");
       main();
 }

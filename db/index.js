@@ -14,13 +14,13 @@ class DB {
     // View all roles
     viewRoles() {
         return this.connection.query(
-            "SELECT title, salary, department_id FROM role ORDER BY id"
+            "SELECT * FROM role ORDER BY id"
         );
     }
     // View all employees with name, role, and manager ID
     viewEmployees() {
         return this.connection.query(
-            "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, r.title AS role, e.manager_id FROM employee e LEFT JOIN role r ON e.role_id = r.id"
+            "SELECT CONCAT(e.first_name, ' ', e.last_name) AS name, r.title AS role, e.role_id, e.manager_id FROM employee e LEFT JOIN role r ON e.role_id = r.id"
         );
     }
     // Add a department
