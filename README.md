@@ -7,6 +7,7 @@ This simple CLI is set up to access a MySQL database named 'employees,' and allo
 ## Installation
 From the 'db' file, open the schema.sql in MySQL Workbench and execute the script. Then, open the seed.sql in MySQL Workbench and execute the script. This will establish a seed database to work with. Then, simply run
 ```
+npm i
 npm start
 ```
 from the command line in the root directory. Happy employee management!
