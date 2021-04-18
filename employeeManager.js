@@ -233,7 +233,7 @@ async function changeEmployeeRole() {
           choices: roleOptions
         }
       ]);
-    
+      
       await query.updateRole(employeeID, roleID);
       console.log("Updated employee's role");
       main();
